@@ -1,2 +1,2 @@
 # PoliPadaria
-Projeto de Banco de Dados para uma padaria fictícia
+Projeto de Banco de Dados para uma padaria fictícia.
