@@ -4,7 +4,7 @@
 -- ============================================
 
 CREATE TABLE Pedido (
-    id INT AUTO_INCREMENT,
+    id INT,
     id_cliente INT NOT NULL,
     id_funcionario INT NOT NULL,
     data_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

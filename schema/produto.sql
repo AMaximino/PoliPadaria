@@ -4,7 +4,7 @@
 -- ============================================
 
 CREATE TABLE Produto (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY,
     nome VARCHAR(120) NOT NULL,
     valor DECIMAL(10,2) NOT NULL,
     Categoria VARCHAR(20) NOT NULL,

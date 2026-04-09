@@ -4,7 +4,7 @@
 -- ============================================
 
 CREATE TABLE Funcionario (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
