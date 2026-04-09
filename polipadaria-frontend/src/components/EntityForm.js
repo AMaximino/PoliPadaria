@@ -1,4 +1,6 @@
 function EntityForm({ entity, db, form, errors, editing, onSubmit, onClear, onFieldChange }) {
+  const editableFields = entity.fields.filter((field) => !field.readOnly);
+
   function renderField(field) {
     const value = String(form[field.name] ?? "");
 
@@ -36,7 +38,7 @@ function EntityForm({ entity, db, form, errors, editing, onSubmit, onClear, onFi
 
   return (
     <form className="crud-form" onSubmit={onSubmit}>
-      {entity.fields.map((field) => (
+      {editableFields.map((field) => (
         <label key={field.name} className="field">
           <span>{field.label}</span>
           {renderField(field)}

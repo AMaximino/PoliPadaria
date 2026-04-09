@@ -1,70 +1,164 @@
-# Getting Started with Create React App
+# Frontend PoliPadaria
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Aplicacao React para gerenciamento de entidades da PoliPadaria com abas por entidade, CRUD completo, filtros, ordenacao, paginacao e validacoes de formulario.
 
-## Available Scripts
+## Tecnologias
 
-In the project directory, you can run:
+- React (Create React App)
+- Hooks
+- Testing Library + Jest
 
-### `npm start`
+## Estrutura
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```text
+polipadaria-frontend/
+	src/
+		components/
+			EntityTabs.js
+			EntityToolbar.js
+			EntityForm.js
+			EntityTable.js
+			PaginationControls.js
+		constants/
+			dataModel.js
+		hooks/
+			usePoliPadariaCrud.js
+		utils/
+			api.js
+			entityLogic.js
+			formatters.js
+			validators.js
+		App.js
+		App.css
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Como executar
 
-### `npm test`
+No diretorio polipadaria-frontend:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+npm install
+npm start
+```
 
-### `npm run build`
+Frontend em:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```text
+http://localhost:3000
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Integracao com backend
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+O frontend chama a API em `src/utils/api.js`.
 
-### `npm run eject`
+Base URL padrao:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```text
+http://localhost:4000/api
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Para alterar a URL da API, use variavel de ambiente:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+REACT_APP_API_URL=http://localhost:5000/api npm start
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Arquitetura
 
-## Learn More
+### 1) Composicao da tela
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- `App.js` monta a interface principal.
+- O estado e as regras de negocio ficam centralizados no hook `usePoliPadariaCrud`.
+- Os componentes recebem estado e handlers via props.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 2) Modelo de dados
 
-### Code Splitting
+`src/constants/dataModel.js` define:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- entidades (campos, tipos, PK e FK)
+- ordem das abas
+- regras de bloqueio de exclusao no frontend
+- base local de fallback inicial (`BASE_DB`)
 
-### Analyzing the Bundle Size
+### 3) Camada de API
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+`src/utils/api.js` encapsula chamadas HTTP:
 
-### Making a Progressive Web App
+- `fetchState()`
+- `createRecord(collection, body)`
+- `updateRecord(collection, key, body)`
+- `deleteRecord(collection, key)`
+- `executeSqlQuery(query)`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### 4) Hook principal
 
-### Advanced Configuration
+`src/hooks/usePoliPadariaCrud.js` concentra:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- bootstrap inicial de dados via API
+- controle de aba ativa
+- estado de formulario e edicao
+- validacao por campo
+- filtro global e filtro avancado
+- ordenacao
+- paginacao
+- operacoes CRUD (create/update/delete)
 
-### Deployment
+## Funcionalidades
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- CRUD por entidade
+- Validacoes de obrigatoriedade e tipos
+- Validacao e mascara de CPF
+- Formatacao de moeda BRL em campos monetarios
+- Validacao de data/hora (`datetime-local`)
+- Validacao de FK contra dados carregados
+- Filtro global por texto
+- Filtro avancado por campo com operadores
+- Ordenacao asc/desc por coluna
+- Paginacao com tamanho de pagina configuravel
+- Aba SQL para executar queries SQL puras
 
-### `npm run build` fails to minify
+## Aba SQL
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+A aba `SQL` permite executar querys diretamente no SQLite via endpoint `POST /api/sql`.
+
+Comportamento:
+
+- Querys de leitura mostram tabela dinamica de resultado.
+- Querys de escrita mostram quantidade de linhas afetadas e ultimo ID inserido (quando houver).
+- O console aceita uma instrucao por execucao.
+
+## Chave primaria composta
+
+Quando a entidade possui PK composta, o frontend gera a chave no formato:
+
+```text
+valor1::valor2
+```
+
+Esse formato e enviado para endpoints de update/delete.
+
+## Testes
+
+Executar testes:
+
+```bash
+npm test -- --watchAll=false
+```
+
+Build de producao:
+
+```bash
+npm run build
+```
+
+## Fluxo de inicializacao
+
+1. O hook inicializa com `BASE_DB`.
+2. Em seguida, tenta carregar snapshot real do backend com `fetchState()`.
+3. Se houver falha de comunicacao, o frontend exibe mensagem de erro.
+
+## Troubleshooting
+
+- Erro de CORS: confirme se o backend esta em execucao e com CORS habilitado.
+- Porta 3000 ocupada: finalize o processo atual ou rode em outra porta.
+- API fora do ar: verifique `REACT_APP_API_URL` e o endpoint `/api/health` no backend.

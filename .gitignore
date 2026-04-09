@@ -1,2 +1,7 @@
 .history/
 *.db
+backend/data/*.sqlite3
+node_modules/
+backend/node_modules/
+polipadaria-frontend/node_modules/
+npm-debug.log*

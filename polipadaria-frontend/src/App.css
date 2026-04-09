@@ -237,6 +237,45 @@ th {
   align-items: center;
 }
 
+.sql-panel {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.sql-hint {
+  margin: 0;
+  color: #6f3e1f;
+  font-size: 0.9rem;
+}
+
+.sql-field textarea {
+  width: 100%;
+  border: 1px solid #d5a784;
+  border-radius: 8px;
+  min-height: 10rem;
+  padding: 0.65rem;
+  font-family: "Courier New", Courier, monospace;
+  background: #fffdfb;
+  resize: vertical;
+}
+
+.sql-summary {
+  margin: 0.3rem 0;
+  color: #6c3f27;
+  font-weight: 600;
+}
+
+.sql-raw-result {
+  margin-top: 0.5rem;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #d5a784;
+  background: #fffdfb;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.82rem;
+}
+
 @media (max-width: 768px) {
   .App {
     padding: 0.75rem;

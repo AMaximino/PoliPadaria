@@ -4,6 +4,7 @@ import EntityTable from "./components/EntityTable";
 import EntityTabs from "./components/EntityTabs";
 import EntityToolbar from "./components/EntityToolbar";
 import PaginationControls from "./components/PaginationControls";
+import SqlConsole from "./components/SqlConsole";
 import { ENTITY_CONFIG, TAB_ORDER } from "./constants/dataModel";
 import { usePoliPadariaCrud } from "./hooks/usePoliPadariaCrud";
 
@@ -44,12 +45,14 @@ function App() {
     setPageSize,
   } = usePoliPadariaCrud();
 
+  const isSqlTab = activeTab === "sql_console";
+
   return (
     <div className="App">
       <div className="App-wrapper">
         <header className="App-header">PoliPadaria</header>
         <main>
-          <p className="App-subtitle">Sistema React com CRUD por entidade do diagrama ER</p>
+          <p className="App-subtitle">Sistema React com CRUD para uma padaria</p>
 
           <EntityTabs
             tabOrder={TAB_ORDER}
@@ -58,58 +61,62 @@ function App() {
             onChange={setActiveTab}
           />
 
-          <section className="entity-panel">
-            <h2>{entity.title}</h2>
+          {isSqlTab ? (
+            <SqlConsole />
+          ) : (
+            <section className="entity-panel">
+              <h2>{entity.title}</h2>
 
-            <EntityToolbar
-              entity={entity}
-              filterText={filterText}
-              sortField={sortField}
-              sortDirection={sortDirection}
-              advancedFilter={advancedFilter}
-              operatorOptions={operatorOptions}
-              showSecondValue={showSecondValue}
-              onFilterChange={handleGlobalFilterChange}
-              onSortFieldChange={handleSortFieldChange}
-              onSortDirectionChange={handleSortDirectionChange}
-              onAdvancedFilterChange={handleAdvancedFilterChange}
-              onClearAdvancedFilter={clearAdvancedFilters}
-            />
+              <EntityToolbar
+                entity={entity}
+                filterText={filterText}
+                sortField={sortField}
+                sortDirection={sortDirection}
+                advancedFilter={advancedFilter}
+                operatorOptions={operatorOptions}
+                showSecondValue={showSecondValue}
+                onFilterChange={handleGlobalFilterChange}
+                onSortFieldChange={handleSortFieldChange}
+                onSortDirectionChange={handleSortDirectionChange}
+                onAdvancedFilterChange={handleAdvancedFilterChange}
+                onClearAdvancedFilter={clearAdvancedFilters}
+              />
 
-            <EntityForm
-              entity={entity}
-              db={db}
-              form={form}
-              errors={fieldErrors}
-              editing={Boolean(editingKey)}
-              onSubmit={handleSubmit}
-              onClear={resetForm}
-              onFieldChange={handleChange}
-            />
+              <EntityForm
+                entity={entity}
+                db={db}
+                form={form}
+                errors={fieldErrors}
+                editing={Boolean(editingKey)}
+                onSubmit={handleSubmit}
+                onClear={resetForm}
+                onFieldChange={handleChange}
+              />
 
-            {message && <p className="feedback">{message}</p>}
+              {message && <p className="feedback">{message}</p>}
 
-            <EntityTable
-              entity={entity}
-              rows={paginatedRows}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              formatCellValue={formatCellValue}
-              getPk={getPk}
-            />
+              <EntityTable
+                entity={entity}
+                rows={paginatedRows}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                formatCellValue={formatCellValue}
+                getPk={getPk}
+              />
 
-            <PaginationControls
-              currentPage={currentPage}
-              totalPages={totalPages}
-              pageSize={pageSize}
-              totalItems={filteredTotal}
-              onPageChange={setCurrentPage}
-              onPageSizeChange={(size) => {
-                setPageSize(size);
-                setCurrentPage(1);
-              }}
-            />
-          </section>
+              <PaginationControls
+                currentPage={currentPage}
+                totalPages={totalPages}
+                pageSize={pageSize}
+                totalItems={filteredTotal}
+                onPageChange={setCurrentPage}
+                onPageSizeChange={(size) => {
+                  setPageSize(size);
+                  setCurrentPage(1);
+                }}
+              />
+            </section>
+          )}
         </main>
       </div>
     </div>

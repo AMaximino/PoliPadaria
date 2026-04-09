@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { BASE_DB, DELETE_RULES, ENTITY_CONFIG, STORAGE_KEY, TAB_ORDER } from "../constants/dataModel";
+import { BASE_DB, DELETE_RULES, ENTITY_CONFIG, TAB_ORDER } from "../constants/dataModel";
 import { currencyInputToNumber, maskCpf, normalizeCurrencyInput, toCurrencyInput } from "../utils/formatters";
+import { createRecord, deleteRecord, fetchState, updateRecord } from "../utils/api";
 import {
   buildEmptyForm,
   fieldToComparable,
@@ -10,7 +11,6 @@ import {
   getPk,
   nextId,
   parseFilterValue,
-  readDb,
 } from "../utils/entityLogic";
 import { isValidCpf, isValidDatetimeLocal } from "../utils/validators";
 
@@ -39,7 +39,7 @@ function parseFieldValue(field, value) {
 }
 
 export function usePoliPadariaCrud() {
-  const [db, setDb] = useState(() => readDb(STORAGE_KEY, BASE_DB));
+  const [db, setDb] = useState(BASE_DB);
   const [activeTab, setActiveTab] = useState(TAB_ORDER[0]);
   const [editingKey, setEditingKey] = useState("");
   const [message, setMessage] = useState("");
@@ -56,8 +56,30 @@ export function usePoliPadariaCrud() {
   const rows = useMemo(() => db[entity.collection] || [], [db, entity.collection]);
 
   useEffect(() => {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
-  }, [db]);
+    let cancelled = false;
+
+    if (typeof fetch !== "function") {
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    fetchState()
+      .then((state) => {
+        if (!cancelled) {
+          setDb(state);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setMessage("Nao foi possivel carregar o banco SQLite.");
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     setForm(buildEmptyForm(ENTITY_CONFIG[activeTab]));
@@ -283,7 +305,7 @@ export function usePoliPadariaCrud() {
     });
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     const isEditing = editingKey !== "";
@@ -293,8 +315,12 @@ export function usePoliPadariaCrud() {
       candidate[field.name] = parseFieldValue(field, form[field.name]);
     });
 
-    if (entity.autoId && !isEditing) {
-      candidate.id = nextId(rows);
+    if (entity.autoId) {
+      if (isEditing) {
+        candidate.id = Number(String(editingKey).split("::")[0]);
+      } else {
+        candidate.id = nextId(rows);
+      }
     }
 
     const validation = validateRow(candidate, editingKey);
@@ -306,13 +332,17 @@ export function usePoliPadariaCrud() {
 
     setFieldErrors({});
 
-    const updatedRows = isEditing
-      ? rows.map((item) => (getPk(entity, item) === editingKey ? candidate : item))
-      : [...rows, candidate];
+    try {
+      const state = isEditing
+        ? await updateRecord(entity.collection, editingKey, candidate)
+        : await createRecord(entity.collection, candidate);
 
-    setDb((prev) => ({ ...prev, [entity.collection]: updatedRows }));
-    setMessage(isEditing ? "Registro atualizado com sucesso." : "Registro criado com sucesso.");
-    resetForm();
+      setDb(state);
+      setMessage(isEditing ? "Registro atualizado com sucesso." : "Registro criado com sucesso.");
+      resetForm();
+    } catch (error) {
+      setMessage(error.message || "Falha ao salvar registro no SQLite.");
+    }
   }
 
   function handleEdit(row) {
@@ -398,7 +428,7 @@ export function usePoliPadariaCrud() {
     return "";
   }
 
-  function handleDelete(row) {
+  async function handleDelete(row) {
     const blocker = findDeleteBlocker(row);
     if (blocker) {
       setMessage(blocker);
@@ -406,14 +436,18 @@ export function usePoliPadariaCrud() {
     }
 
     const targetPk = getPk(entity, row);
-    const updatedRows = rows.filter((item) => getPk(entity, item) !== targetPk);
-    setDb((prev) => ({ ...prev, [entity.collection]: updatedRows }));
+    try {
+      const state = await deleteRecord(entity.collection, targetPk);
+      setDb(state);
 
-    if (editingKey === targetPk) {
-      resetForm();
+      if (editingKey === targetPk) {
+        resetForm();
+      }
+
+      setMessage("Registro removido com sucesso.");
+    } catch (error) {
+      setMessage(error.message || "Falha ao excluir registro no SQLite.");
     }
-
-    setMessage("Registro removido com sucesso.");
   }
 
   return {

@@ -170,6 +170,12 @@ export const ENTITY_CONFIG = {
       },
     ],
   },
+  sql_console: {
+    title: "SQL",
+    collection: "__sqlConsole",
+    pk: ["id"],
+    fields: [{ name: "id", label: "ID", type: "number", readOnly: true }],
+  },
 };
 
 export const TAB_ORDER = [
@@ -180,6 +186,7 @@ export const TAB_ORDER = [
   "produto",
   "produto_ingrediente",
   "ingrediente",
+  "sql_console",
 ];
 
 export const DELETE_RULES = {
