@@ -1,0 +1,253 @@
+* {
+  box-sizing: border-box;
+}
+
+.App {
+  min-height: 100%;
+  background-image:
+    linear-gradient(125deg, rgba(242, 188, 113, 0.35), rgba(145, 61, 34, 0.25)),
+    url("../assets/bread.jpg");
+  background-size: cover;
+  background-position: center;
+  padding: 1.5rem;
+  color: #3e271e;
+}
+
+.App-wrapper {
+  width: min(1200px, 100%);
+  margin: 0 auto;
+  min-height: calc(100vh - 3rem);
+  background: linear-gradient(180deg, rgba(255, 250, 245, 0.97), rgba(255, 245, 234, 0.93));
+  border-radius: 18px;
+  padding: 1.25rem;
+  border: 1px solid rgba(136, 78, 50, 0.18);
+  box-shadow: 0 16px 42px rgba(97, 51, 25, 0.16);
+}
+
+.App-header {
+  display: flex;
+  justify-content: center;
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: 0.08rem;
+  color: #6f3e1f;
+  margin-bottom: 0.2rem;
+}
+
+.App-subtitle {
+  margin: 0 0 1rem;
+  text-align: center;
+  color: #8f5a37;
+  font-weight: 500;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.tab-button {
+  border: 1px solid #cf9f79;
+  border-radius: 999px;
+  background: #fff8f2;
+  color: #7c4322;
+  padding: 0.5rem 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 120ms ease, background-color 120ms ease;
+}
+
+.tab-button:hover {
+  transform: translateY(-1px);
+  background: #ffe8d6;
+}
+
+.tab-button.active {
+  background: #8c4e2a;
+  color: #fff6ef;
+  border-color: #8c4e2a;
+}
+
+.entity-panel {
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(161, 110, 78, 0.25);
+  border-radius: 14px;
+  padding: 1rem;
+}
+
+.entity-panel h2 {
+  margin: 0 0 0.9rem;
+  color: #6f3c1f;
+}
+
+.toolbar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: flex-end;
+}
+
+.field.compact {
+  font-size: 0.85rem;
+}
+
+.field.inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.crud-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  text-align: left;
+  color: #64351c;
+  font-size: 0.9rem;
+}
+
+.field input,
+.field select {
+  border: 1px solid #d5a784;
+  border-radius: 8px;
+  height: 2.25rem;
+  padding: 0 0.55rem;
+  background: #fffdfb;
+}
+
+.field input:read-only {
+  background: #f4ece5;
+}
+
+.field-error {
+  color: #a52a1a;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.55rem;
+  align-items: flex-end;
+}
+
+button {
+  border: none;
+  border-radius: 9px;
+  height: 2.25rem;
+  padding: 0 0.95rem;
+  cursor: pointer;
+  font-weight: 700;
+  color: #fff;
+  background: #945530;
+}
+
+button:hover {
+  filter: brightness(1.05);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: none;
+}
+
+button.secondary {
+  background: #7f7f7f;
+}
+
+button.danger {
+  background: #b53e2e;
+}
+
+.feedback {
+  margin: 0.9rem 0 0;
+  color: #6a2d13;
+  font-weight: 600;
+}
+
+.table-container {
+  overflow-x: auto;
+  margin-top: 0.9rem;
+  border: 1px solid rgba(165, 105, 74, 0.3);
+  border-radius: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+}
+
+th,
+td {
+  border-bottom: 1px solid #f0d9c8;
+  padding: 0.6rem;
+  text-align: left;
+  font-size: 0.92rem;
+}
+
+th {
+  background: #fdf1e6;
+  color: #6f3e1f;
+}
+
+.table-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.pagination {
+  margin-top: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pagination-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  color: #6c3f27;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.pagination-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .App {
+    padding: 0.75rem;
+  }
+
+  .App-wrapper {
+    min-height: calc(100vh - 1.5rem);
+    padding: 0.8rem;
+  }
+
+  .entity-panel {
+    padding: 0.75rem;
+  }
+}
