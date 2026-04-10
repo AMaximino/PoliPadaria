@@ -13,6 +13,17 @@ const {
 const CURRENT_SCHEMA_VERSION = 2;
 const dataDir = path.join(__dirname, "..", "data");
 const dbPath = path.join(dataDir, "polipadaria.sqlite3");
+const schemaDir = path.join(__dirname, "..", "..", "schema");
+const SCHEMA_TABLE_FILES = [
+  "cliente.sql",
+  "funcionario.sql",
+  "produto.sql",
+  "ingrediente.sql",
+  "pedido.sql",
+  "item_pedido.sql",
+  "produto_ingrediente.sql",
+];
+const SCHEMA_SEED_FILE = "seed.sql";
 
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
@@ -37,6 +48,21 @@ function get(sql, params = []) {
 
 function exec(sql) {
   db.exec(sql);
+}
+
+function readSchemaSqlFile(fileName) {
+  const filePath = path.join(schemaDir, fileName);
+  return fs.readFileSync(filePath, "utf8");
+}
+
+function createSchemaFromSqlFiles() {
+  for (const fileName of SCHEMA_TABLE_FILES) {
+    exec(readSchemaSqlFile(fileName));
+  }
+}
+
+function seedFromSqlFile() {
+  exec(readSchemaSqlFile(SCHEMA_SEED_FILE));
 }
 
 function splitColumns(columns) {
@@ -156,9 +182,7 @@ function rebuildSchemaFromSnapshot(snapshot) {
       exec(`DROP TABLE IF EXISTS ${collection};`);
     }
 
-    for (const collection of SEED_ORDER) {
-      exec(TABLE_DEFINITIONS[collection].createSql);
-    }
+    createSchemaFromSqlFiles();
 
     for (const collection of SEED_ORDER) {
       const definition = TABLE_DEFINITIONS[collection];
@@ -191,6 +215,21 @@ function rebuildSchemaFromSnapshot(snapshot) {
 }
 
 function seedIfEmpty() {
+  const allTablesEmpty = SEED_ORDER.every((collection) => {
+    const definition = TABLE_DEFINITIONS[collection];
+    const countRow = get(`SELECT COUNT(*) AS count FROM ${definition.collection}`);
+    return Number(countRow.count) === 0;
+  });
+
+  if (allTablesEmpty) {
+    try {
+      seedFromSqlFile();
+      return;
+    } catch (error) {
+      // Fallback para seed em JavaScript caso os arquivos SQL nao estejam disponiveis.
+    }
+  }
+
   for (const collection of SEED_ORDER) {
     const definition = TABLE_DEFINITIONS[collection];
     const countRow = get(`SELECT COUNT(*) AS count FROM ${definition.collection}`);
@@ -220,9 +259,7 @@ async function initializeDatabase(options = {}) {
     const snapshot = captureExistingData(existingTables);
     rebuildSchemaFromSnapshot(snapshot);
   } else {
-    for (const collection of SEED_ORDER) {
-      exec(TABLE_DEFINITIONS[collection].createSql);
-    }
+    createSchemaFromSqlFiles();
     exec(`PRAGMA user_version = ${CURRENT_SCHEMA_VERSION};`);
   }
 
