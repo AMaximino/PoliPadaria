@@ -1,5 +1,5 @@
 # PoliPadaria
-Projeto de Banco de Dados para uma padaria fictícia.
+Projeto de Banco de Dados para uma padaria ficticia.
 
 
 
@@ -18,6 +18,13 @@ Sophia Soares Mariano - 15511213
 
 - [Frontend](polipadaria-frontend/README.md)
 - [Backend](backend/README.md)
+- [Documentacao academica consolidada](docs/README.md)
+- [Descricao do projeto](docs/descricao_projeto.md)
+- [Modelo de dados](docs/modelo_dados.md)
+- [Consultas](docs/consultas.md)
+- [Geracao de dados mock](docs/geracao_mock.md)
+- [Relatorio de atividades](docs/relatorio_atividades.md)
+- [Manual do usuario](docs/manual_usuario.md)
 
 ## Execucao local
 
@@ -51,3 +58,28 @@ npm start
 ```
 
 O frontend consome a API em `http://localhost:4000/api` por padrao. O arquivo do banco fica em `backend/data/polipadaria.sqlite3`.
+
+## Resumo do backend
+
+O backend foi evoluido para continuar simples, mas agora com:
+
+- validacao de payload antes do SQLite
+- filtros, ordenacao e paginacao no CRUD generico
+- endpoints de dominio para pedidos, ingredientes e composicao de produtos
+- criacao transacional de pedido com itens em `POST /api/pedidos-com-itens`
+- `valor_unitario` em `itensPedido` para preservar historico de preco
+- camada de insights operacionais em `/api/insights`
+- dashboard no frontend para resumo, vendas, clientes, produtos e estoque critico
+
+Exemplos:
+
+```bash
+curl "http://localhost:4000/api/produtos?categoria=Panificacao"
+curl "http://localhost:4000/api/produtos?nome_like=Pao&sort=valor&order=asc"
+curl "http://localhost:4000/api/ingredientes/baixo-estoque?max=10"
+curl "http://localhost:4000/api/produtos/1/ingredientes"
+curl "http://localhost:4000/api/insights/resumo"
+curl "http://localhost:4000/api/insights/produtos-mais-vendidos?limit=5"
+```
+
+Detalhes completos da API estao em [backend/README.md](backend/README.md).

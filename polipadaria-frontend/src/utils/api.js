@@ -23,6 +23,10 @@ export function fetchState() {
   return request("/state");
 }
 
+export function fetchInsights(path) {
+  return request(path);
+}
+
 export function createRecord(collection, body) {
   return request(`/${collection}`, {
     method: "POST",
@@ -32,7 +36,7 @@ export function createRecord(collection, body) {
 
 export function updateRecord(collection, key, body) {
   return request(`/${collection}/${encodeURIComponent(key)}`, {
-    method: "PUT",
+    method: "PATCH",
     body: JSON.stringify(body),
   });
 }

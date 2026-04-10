@@ -1,16 +1,8 @@
--- ============================================
--- Tabela: Produto Ingrediente
--- Descrição: Relaciona um produto com vários itens de ingredientes
--- ============================================
-
-CREATE TABLE Produto_Ingrediente (
-    id_produto INT,
-    id_ingrediente INT,
-    quantidade DECIMAL(10,2),
-    PRIMARY KEY (id_produto, id_ingrediente),
-    FOREIGN KEY (id_produto) REFERENCES Produto(id_produto),
-    FOREIGN KEY (id_ingrediente) REFERENCES Ingrediente(id_ingrediente)
+CREATE TABLE IF NOT EXISTS produtosIngredientes (
+  id_produto INTEGER NOT NULL,
+  id_ingrediente INTEGER NOT NULL,
+  quantidade REAL NOT NULL CHECK (quantidade > 0),
+  PRIMARY KEY (id_produto, id_ingrediente),
+  FOREIGN KEY (id_produto) REFERENCES produtos(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+  FOREIGN KEY (id_ingrediente) REFERENCES ingredientes(id) ON UPDATE CASCADE ON DELETE RESTRICT
 );
-
--- Índices úteis
-CREATE INDEX idx_produto_ingrediente_quantidade ON Produto_Ingrediente(quantidade);

@@ -83,6 +83,128 @@
   color: #6f3c1f;
 }
 
+.dashboard-intro {
+  margin: 0;
+  color: #8b5a37;
+}
+
+.insights-panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.insights-header {
+  display: grid;
+  gap: 1rem;
+}
+
+.insights-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.8rem;
+}
+
+.summary-card {
+  padding: 0.9rem;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #fffaf4, #fcead7);
+  border: 1px solid rgba(160, 102, 64, 0.24);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.summary-card-label {
+  display: block;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04rem;
+  color: #8a5936;
+}
+
+.summary-card-value {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 1.45rem;
+  color: #5d3018;
+}
+
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.dashboard-section {
+  grid-column: span 6;
+  background: rgba(255, 253, 250, 0.82);
+  border: 1px solid rgba(168, 112, 80, 0.24);
+  border-radius: 14px;
+  padding: 1rem;
+}
+
+.dashboard-section-wide {
+  grid-column: span 12;
+}
+
+.dashboard-section h3 {
+  margin: 0 0 0.8rem;
+  color: #6a381d;
+}
+
+.section-title-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.section-caption {
+  color: #946242;
+  font-size: 0.9rem;
+}
+
+.empty-state {
+  margin: 0;
+  color: #875236;
+}
+
+.sales-bars {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.sales-bar-row {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.sales-bar-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  color: #6c3f27;
+  font-size: 0.92rem;
+}
+
+.sales-bar-track {
+  width: 100%;
+  height: 14px;
+  border-radius: 999px;
+  background: #f2ddca;
+  overflow: hidden;
+}
+
+.sales-bar-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #c97034, #8b4723);
+}
+
+.dashboard-table {
+  margin-top: 0;
+}
+
 .toolbar {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -288,5 +410,10 @@ th {
 
   .entity-panel {
     padding: 0.75rem;
+  }
+
+  .dashboard-section,
+  .dashboard-section-wide {
+    grid-column: 1 / -1;
   }
 }

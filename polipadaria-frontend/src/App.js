@@ -3,6 +3,7 @@ import EntityForm from "./components/EntityForm";
 import EntityTable from "./components/EntityTable";
 import EntityTabs from "./components/EntityTabs";
 import EntityToolbar from "./components/EntityToolbar";
+import InsightsDashboard from "./components/InsightsDashboard";
 import PaginationControls from "./components/PaginationControls";
 import SqlConsole from "./components/SqlConsole";
 import { ENTITY_CONFIG, TAB_ORDER } from "./constants/dataModel";
@@ -46,6 +47,7 @@ function App() {
   } = usePoliPadariaCrud();
 
   const isSqlTab = activeTab === "sql_console";
+  const isInsightsTab = activeTab === "dashboard";
 
   return (
     <div className="App">
@@ -61,7 +63,9 @@ function App() {
             onChange={setActiveTab}
           />
 
-          {isSqlTab ? (
+          {isInsightsTab ? (
+            <InsightsDashboard />
+          ) : isSqlTab ? (
             <SqlConsole />
           ) : (
             <section className="entity-panel">

@@ -310,20 +310,32 @@ export function usePoliPadariaCrud() {
 
     const isEditing = editingKey !== "";
     const candidate = {};
+    const validationCandidate = {};
 
     entity.fields.forEach((field) => {
-      candidate[field.name] = parseFieldValue(field, form[field.name]);
+      const parsedValue = parseFieldValue(field, form[field.name]);
+      validationCandidate[field.name] = parsedValue;
+
+      if (field.readOnly) {
+        return;
+      }
+
+      if (isEditing && entity.pk.includes(field.name)) {
+        return;
+      }
+
+      candidate[field.name] = parsedValue;
     });
 
     if (entity.autoId) {
       if (isEditing) {
-        candidate.id = Number(String(editingKey).split("::")[0]);
+        validationCandidate.id = Number(String(editingKey).split("::")[0]);
       } else {
-        candidate.id = nextId(rows);
+        validationCandidate.id = nextId(rows);
       }
     }
 
-    const validation = validateRow(candidate, editingKey);
+    const validation = validateRow(validationCandidate, editingKey);
     if (validation.generalError) {
       setFieldErrors(validation.fieldErrors);
       setMessage(validation.generalError);
@@ -333,9 +345,13 @@ export function usePoliPadariaCrud() {
     setFieldErrors({});
 
     try {
-      const state = isEditing
-        ? await updateRecord(entity.collection, editingKey, candidate)
-        : await createRecord(entity.collection, candidate);
+      if (isEditing) {
+        await updateRecord(entity.collection, editingKey, candidate);
+      } else {
+        await createRecord(entity.collection, candidate);
+      }
+
+      const state = await fetchState();
 
       setDb(state);
       setMessage(isEditing ? "Registro atualizado com sucesso." : "Registro criado com sucesso.");
@@ -437,7 +453,8 @@ export function usePoliPadariaCrud() {
 
     const targetPk = getPk(entity, row);
     try {
-      const state = await deleteRecord(entity.collection, targetPk);
+      await deleteRecord(entity.collection, targetPk);
+      const state = await fetchState();
       setDb(state);
 
       if (editingKey === targetPk) {

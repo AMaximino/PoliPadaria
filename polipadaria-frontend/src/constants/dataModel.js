@@ -1,6 +1,12 @@
 export const STORAGE_KEY = "polipadaria-db-v1";
 
 export const ENTITY_CONFIG = {
+  dashboard: {
+    title: "Insights",
+    collection: "__insights",
+    pk: ["id"],
+    fields: [{ name: "id", label: "ID", type: "number", readOnly: true }],
+  },
   cliente: {
     title: "Cliente",
     collection: "clientes",
@@ -179,6 +185,7 @@ export const ENTITY_CONFIG = {
 };
 
 export const TAB_ORDER = [
+  "dashboard",
   "cliente",
   "funcionario",
   "pedido",

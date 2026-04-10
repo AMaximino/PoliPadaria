@@ -1,16 +1,6 @@
--- ============================================
--- Tabela: Produto
--- Descrição: Armazena os produtos disponíveis
--- ============================================
-
-CREATE TABLE Produto (
-    id INT PRIMARY KEY,
-    nome VARCHAR(120) NOT NULL,
-    valor DECIMAL(10,2) NOT NULL,
-    Categoria VARCHAR(20) NOT NULL,
-    CONSTRAINT chk_preco_positivo CHECK (valor >= 0)
+CREATE TABLE IF NOT EXISTS produtos (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nome TEXT NOT NULL,
+  valor REAL NOT NULL CHECK (valor >= 0),
+  categoria TEXT NOT NULL
 );
-
--- Índice para busca por nome
-CREATE INDEX idx_produto_nome ON Produto(nome);
-
